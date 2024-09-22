@@ -18,7 +18,7 @@ class CustomLogger:
         self.logger.setLevel(logging.DEBUG)
 
         # Create file handler
-        file_handler = logging.FileHandler(log_filename)
+        file_handler = logging.FileHandler(os.path.join(os.getcwd(), log_filename))
         file_handler.setLevel(logging.DEBUG)
 
         # Create formatter
@@ -30,6 +30,7 @@ class CustomLogger:
 
     def get_logger(self):
         return self.logger
+
 
 # Usage:
 # from custom_logger import CustomLogger

@@ -5,7 +5,7 @@ import os
 import torch
 import numpy as np
 from typing import List, Dict, Any
-from SharedLogger import CustomLogger
+from CustomLogger import CustomLogger
 import tiktoken
 
 logger = CustomLogger().get_logger()
