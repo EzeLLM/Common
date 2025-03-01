@@ -2,13 +2,11 @@ import json
 import yaml
 import sys
 import os
-import torch
 import numpy as np
 from typing import List, Dict, Any
-from CustomLogger import CustomLogger
 import tiktoken
-
-logger = CustomLogger().get_logger()
+import csv
+from typing import Optional
 tokenizer = tiktoken.get_encoding('cl100k_base')
 
 #### File Operations
@@ -25,7 +23,8 @@ def open_json(path: str) -> Dict[str, Any]:
         with open(path, 'r') as file:
             return json.load(file)
     except FileNotFoundError:
-        logger.error(f"Error: JSON file not found at {path}. Aborting.")
+        # logger.error(f"Error: JSON file not found at {path}. Aborting.")
+        print(f"Error: JSON file not found at {path}. Aborting.")
         sys.exit(1)
 
 def dump_to_json(path: str, data: Any) -> None:
@@ -38,7 +37,7 @@ def dump_to_text(text: str, path: str) -> None:
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, 'w', encoding='utf-8') as file:
         file.write(text)
-    logger.info(f"Text successfully written to {path}")
+    print(f"Text successfully written to {path}")
 
 #### Text Processing
 
@@ -58,16 +57,7 @@ def remove_stopwords(text: str, stopwords: List[str]) -> str:
     """Remove stopwords from text."""
     return ' '.join([word for word in text.split() if word.lower() not in stopwords])
 
-#### AI and Machine Learning
 
-def get_device() -> torch.device:
-    """Determine the available device for PyTorch."""
-    if torch.cuda.is_available():
-        return torch.device("cuda")
-    elif torch.backends.mps.is_available():
-        return torch.device("mps")
-    else:
-        return torch.device("cpu")
 
 def compute_similarity(embedding1: np.ndarray, embedding2: np.ndarray) -> float:
     """Compute cosine similarity between two embeddings."""
@@ -97,3 +87,38 @@ def flatten_dict(d: Dict[str, Any], parent_key: str = '', sep: str = '_') -> Dic
 def chunk_list(lst: List[Any], chunk_size: int) -> List[List[Any]]:
     """Split a list into chunks of specified size."""
     return [lst[i:i + chunk_size] for i in range(0, len(lst), chunk_size)]
+
+def open_text(path: str) -> str:
+    """Open text file and return content."""
+    with open(path, 'r', encoding='utf-8') as file:
+        return file.read()
+    
+def save_text(text: str, path: str) -> None:
+    """Save text to file."""
+    with open(path, 'w', encoding='utf-8') as file:
+        file.write(text)
+    
+def dumpt_to_text(text: str, path: str) -> None:
+    """Append text to file."""
+    with open(path, 'a', encoding='utf-8') as file:
+        file.write(text)
+
+
+def dumpt_to_csv(data: Dict[str, Any], path: str) -> None:
+    """Add data to CSV file."""
+    if os.path.exists(path):
+        with open(path, 'a', newline='') as file:
+            writer = csv.DictWriter(file, fieldnames=data.keys())
+            writer.writerow(data)
+    else:
+        with open(path, 'w', newline='') as file:
+            writer = csv.DictWriter(file, fieldnames=data.keys())
+            writer.writeheader()
+            writer.writerow(data)
+
+
+def debug(*args, **kwargs) -> None:
+    """Print debug messages."""
+    print(*args, **kwargs)
+    sys.stdout.flush()
+    os.exit(0)

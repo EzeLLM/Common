@@ -14,7 +14,6 @@ from .Common import (
     flatten_dict,
     chunk_list
 )
-from .CustomLogger import CustomLogger
 
 __all__ = [
     # File Operations
@@ -39,9 +38,8 @@ __all__ = [
     'flatten_dict',
     'chunk_list',
     
-    # Logger
-    'CustomLogger'
+
 ]
 
 # You can add a version number here
-__version__ = "0.1.0"
+__version__ = "0.1.4"
